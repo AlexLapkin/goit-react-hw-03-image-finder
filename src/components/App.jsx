@@ -47,20 +47,13 @@ export class App extends Component {
       })
     }
 
-     if (page === 1 ) {
-      this.setState({
-       gallery: data.hits,
-       isLoading: false,
-       onLoadMore: (totalHits > 12 * page) ? true : false
-       });
-      }
-        else {
-        this.setState(prevState => ({
-          gallery: [...prevState.gallery, ...data.hits],
-          isLoading: false,
-          onLoadMore: (totalHits > 12 * page) ? true : false
-        }))
-    }
+    this.setState(prevState => ({
+      gallery: (page === 1) ? data.hits : [...prevState.gallery, ...data.hits],
+      isLoading: false,
+      onLoadMore: (totalHits > 12 * page) ? true : false,
+    })
+ )
+
 }
       catch (error) {
         this.setState({error: error.message});
