@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-
+import css from './Searchbar.module.css';
+import PropTypes from "prop-types";
 class Searchbar extends Component {
 state = {
   searchWord: '',  
@@ -7,10 +8,10 @@ state = {
   
   handleSubmit = event => {
     event.preventDefault();
-    this.props.fetchGallery(this.state.searchWord);
-    this.setState({
-      searchWord: '',
-    })
+    this.props.onSubmit(this.state.searchWord);
+    //this.setState({
+    //  searchWord: '',
+    //})
   }
 
  handleInputChange = event => {
@@ -18,23 +19,22 @@ state = {
  }
 
   render() {
-    //const { searchWord } = this.state.
+    //const { searchWord } = this.state;
     return (
-        <header class="searchbar">
-        <form class="form"
+        <header className={css.searchbar}>
+        <form className={css.searchbar_form}
         onSubmit={this.handleSubmit}>
-          <button type="submit" class="button">
-            <span class="button-label">Search</span>
+          <button type="submit" className={css.searchbar_btn}>
+            <span className={css.button_label}>Search</span>
           </button>
-      
           <input
             name = "searchWord"
             value={this.state.searchWord}
             //value={searchWord}
-            class="input"
+            className={css.searchbar_input}
             type="text"
-            autocomplete="off"
-            autofocus
+            //autocomplete="off"
+            //autofocus
             placeholder="Search images and photos"
             onChange={this.handleInputChange}
           />
@@ -42,6 +42,11 @@ state = {
       </header> 
     )
 }
+}
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func,
+  searchWord: PropTypes.string,
 }
 
 export default Searchbar;
