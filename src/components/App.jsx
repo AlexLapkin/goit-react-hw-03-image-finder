@@ -40,7 +40,7 @@ export class App extends Component {
      if ((data.hits).length === 0) {
       Notiflix.Notify.info('Nothing found for your request! Please enter another word!',
       { position: 'center-center',
-      timeout: 3000,
+      timeout: 5000,
     })
       this.setState({
        searchWord: '',
