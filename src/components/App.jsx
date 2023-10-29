@@ -11,15 +11,14 @@ export class App extends Component {
   state = {
     gallery: null,
     isLoading: false,
-    error: null,
     searchWord: '',
     page: 1,
-    totalImages: 0,
     per_page: 12,
     isOpenModal: false,
     largeImageURL: 'largeImageURL',
     onLoadMore: false,
     id: null,
+    error: null,
   }
 
     fetchGallery = async (searchWord, page) => {
@@ -29,18 +28,23 @@ export class App extends Component {
 
       if (!searchWord) {
         this.setState({
-          isLoading: false,
+         isLoading: false,
         })
         return;
       }
      try {
      const { data } = await fetchImage(searchWord, page);
      const {totalHits} = data;
+     const { per_page } = this.state; 
                
+     if ((data.hits).length !== 0 && page === 1) {
+     Notiflix.Notify.success(`We found ${totalHits} images for your request`,
+     {position: 'right-top', timeout: 3000 })
+     }
      if ((data.hits).length === 0) {
-      Notiflix.Notify.info('Nothing found for your request! Please enter another word!',
+     Notiflix.Notify.failure('Nothing found for your request! Please enter another word!',
       { position: 'center-center',
-      timeout: 5000,
+      timeout: 3000,
     })
       this.setState({
        searchWord: '',
@@ -50,10 +54,15 @@ export class App extends Component {
     this.setState(prevState => ({
       gallery: (page === 1) ? data.hits : [...prevState.gallery, ...data.hits],
       isLoading: false,
-      onLoadMore: (totalHits > 12 * page) ? true : false,
+      onLoadMore: (totalHits > per_page * page) ? true : false,
     })
  )
-
+      if (totalHits <= per_page * page && totalHits) {
+        Notiflix.Notify.info('We are sorry, but you have reached the end of search results!',
+      { position: 'right-top',
+      timeout: 5000,
+    })
+  }
 }
       catch (error) {
         this.setState({error: error.message});
@@ -95,13 +104,12 @@ formSubmit = searchWord => {
  this.setState(prevState => ({
      gallery: prevState.searchWord === searchWord ? prevState.gallery : null,
      searchWord,
-     page: 1,
-   }));
+     page: prevState.searchWord !== searchWord ? 1 : prevState.page,
+  }));
 }
 
   componentDidUpdate(_, prevState) {
     const {searchWord, page} = this.state;
-    
       if (prevState.searchWord !== searchWord || prevState.page !== page) {
       this.fetchGallery(searchWord, page);
   }
@@ -115,10 +123,11 @@ formSubmit = searchWord => {
       < Searchbar onSubmit={this.formSubmit} />
 
       < ImageGallery gallery={gallery}
-       openModal={this.openModal} />
-
-      {isLoading && < Loader  />}
-
+      openModal={this.openModal} />
+      
+      {isLoading && < Loader  />
+      }
+      
       { gallery && onLoadMore && (!isLoading) &&
       < Button onClickLoadMore={this.onClickLoadMore}/>
       }
@@ -126,7 +135,7 @@ formSubmit = searchWord => {
       { isOpenModal &&
       < Modal closeModal={this.closeModal}
         largeImageURL={largeImageURL} />
-        }
+      }
       </div>
     )}
   }
