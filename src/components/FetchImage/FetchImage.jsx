@@ -11,7 +11,7 @@ const options = {
     q: searchWord,
     image_type: 'photo',
     orientation: 'horizontal',
-    safesearch: 'true',
+    //safesearch: 'true',
     page: page,
     per_page: 12,
   },
