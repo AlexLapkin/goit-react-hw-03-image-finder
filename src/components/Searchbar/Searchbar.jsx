@@ -33,8 +33,8 @@ state = {
             //value={searchWord}
             className={css.searchbar_input}
             type="text"
-            //autocomplete="off"
-            //autofocus
+            autocomplete="off"
+            autofocus
             placeholder="Search images and photos"
             onChange={this.handleInputChange}
           />
